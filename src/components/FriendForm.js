@@ -76,6 +76,7 @@ export default function FriendForm(props) {
             }>submit</button>
         </div>
       </div>
+      <input type="color" name="color" id="color"></input>
     </form>
   )
 }

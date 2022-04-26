@@ -18,7 +18,7 @@ export default function App() {
   // 🔥 STEP 1 - WE NEED STATE TO HOLD ALL VALUES OF THE FORM!
   const [formValues, setFormValues] = useState(initialFormValues); // fix this using the state hook
   const [formError, setFormError] = useState(null);
-  
+
   const updateForm = (inputName, inputValue) => {
     // 🔥 STEP 8 - IMPLEMENT a "form state updater" which will be used inside the inputs' `onChange` handler
     //  It takes in the name of an input and its value, and updates `formValues`
@@ -37,7 +37,9 @@ export default function App() {
       role: formValues.role
     }
 
-    if (!newFriend.username || !newFriend.email || !newFriend.role) return;
+    if (!newFriend.username || !newFriend.email || !newFriend.role) {
+      setFormError("Are you kidding me? This is the simplest form in the world bud, pull it together!");
+    }
 
     axios.post("fakeapi.com", newFriend)
       .then(res => {
@@ -53,6 +55,7 @@ export default function App() {
   return (
     <div className='container'>
       <h1>Form App</h1>
+      { formError && <h2 className="error-text-">{formError}</h2> }
 
       <FriendForm
         // 🔥 STEP 2 - The form component needs its props.
