@@ -21,6 +21,8 @@ function SimpleForm() {
      * const value = evt.target.value;
      */
     setFormValues({ ...formValues, [name]: value });
+  };
+  const Submit = (evt) => {
     evt.preventDefault();
     setPets(
       pets.concat({ petName: formValues.petName, petType: formValues.petType })
