@@ -7,9 +7,9 @@ export default function FriendForm(props) {
   const onChange = (evt) => {
     // 🔥 STEP 6 - IMPLEMENT the change handler for our inputs and dropdown
     // a) pull the name of the input from the event object
-    const name = evt.target.name;
+    const name = evt.target.name; // either 'username' or 'email'
     // b) pull the value of the input from the event object
-    const { value } = evt.target;
+    const { value } = evt.target; // who knows, the current value
     // c) use the `update` callback coming in through props
     update(name, value);
   };
@@ -35,12 +35,12 @@ export default function FriendForm(props) {
               Inputs render what they're told - their current value comes from app state.
               At each keystroke, a change handler fires to change app state. */}
           <input
-            type="text"
             name="username"
-            placeholder="Type a username ya chump..."
+            type="text"
+            placeholder="type a username..."
+            maxLength="30"
             value={values.username}
             onChange={onChange}
-            maxLength="30"
           />
         </label>
 
@@ -48,14 +48,15 @@ export default function FriendForm(props) {
           Email
           {/* 🔥 STEP 4 - Make an input of type `email` or `text` for email. */}
           <input
+            name="email"
             type="email"
-            name="emial"
-            placeholder="Type an email ya chump..."
+            placeholder="type an email..."
+            maxLength="30"
             value={values.email}
             onChange={onChange}
-            maxLength="30"
           />
         </label>
+
         {/* ////////// DROPDOWN ////////// */}
         {/* ////////// DROPDOWN ////////// */}
         {/* ////////// DROPDOWN ////////// */}
@@ -63,15 +64,18 @@ export default function FriendForm(props) {
           Role
           {/* 🔥 STEP 5 - Make dropdown for role. */}
           <select value={values.role} name="role" onChange={onChange}>
-            <option value="">---Select a Role---</option>
-            <option value="student">Student</option>
-            <option value="instructor">Instructor</option>
-            <option value="alumni">Alumni</option>
+            <option value="">-- Select a Role --</option>
+            <option value="Student">Student</option>
+            <option value="TL"> Team Lead</option>
+            <option value="Instructor"> Instructor</option>
+            <option value="Alumni">Alumni</option>
           </select>
         </label>
 
         <div className="submit">
-          <button>submit</button>
+          <button disabled={!values.username || !values.email || !values.role}>
+            submit
+          </button>
         </div>
       </div>
     </form>

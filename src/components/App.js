@@ -16,63 +16,56 @@ export default function App() {
   const [friends, setFriends] = useState([]); // careful what you initialize your state to
 
   // 🔥 STEP 1 - WE NEED STATE TO HOLD ALL VALUES OF THE FORM!
-  const [formValues, setFormValues] = useState(initialFormValues); // fix this using the state hook
-  const [formError, setFormError] = useState("");
+  const formValues = {}; // fix this using the state hook
 
   const updateForm = (inputName, inputValue) => {
     // 🔥 STEP 8 - IMPLEMENT a "form state updater" which will be used inside the inputs' `onChange` handler
     //  It takes in the name of an input and its value, and updates `formValues`
-    setFormValues({ ...formValues, [inputName]: inputValue });
+    setFormValues({
+      ...formValues,
+      [inputName]: inputValue,
+    });
   };
 
   const submitForm = () => {
     // 🔥 STEP 9 - IMPLEMENT a submit function which will be used inside the form's own `onSubmit`
     //  a) make a new friend object, trimming whitespace from username and email
-    //  b) prevent further action if either username or email or role is empty string after trimming
-    //  c) POST new friend to backend, and on success update the list of friends in state with the new friend from API
-    //  d) also on success clear the form
-
     const newFriend = {
       username: formValues.username.trim(),
       email: formValues.email.trim(),
-      role: formValues.role.trim(),
+      role: formValues.role,
     };
-
+    //  b) prevent further action if either username or email or role is empty string after trimming
     if (!newFriend.username || !newFriend.email || !newFriend.role) return;
-    setFormError(
-      "Ya dolt, username, email AND role are required. GET outta here!"
-    );
+    //  c) POST new friend to backend, and on success update the list of friends in state with the new friend from API
+    axios.post(`fakeapi.com`, newFriend).then((res) => {
+      const friendFromBackend = res.data; // includes a unique 'id'
+      setFriends([friendFromBackend, ...friend]);
+      //  d) also on success clear the form
+      setFormValues(initialFormValues);
+    });
   };
 
-  axios
-    .post("fakeapi.com", newFriend)
-    .then((res) => {
-      setFriends([res.data, ...friends]);
-      setFormValues(initialFormValues);
-    })
-    .catch((err) => console.error(err));
+  useEffect(() => {
+    axios.get("fakeapi.com").then((res) => setFriends(res.data));
+  }, []);
+
+  return (
+    <div className="container">
+      <h1>Form App</h1>
+
+      <FriendForm
+        // 🔥 STEP 2 - The form component needs its props.
+        //  Check implementation of FriendForm
+        //  to see what props it expects.
+        update={updateForm}
+        submit={submitForm}
+        values={formValues}
+      />
+
+      {friends.map((friend) => {
+        return <Friend key={friend.id} details={friend} />;
+      })}
+    </div>
+  );
 }
-
-useEffect(() => {
-  axios.get("fakeapi.com").then((res) => setFriends(res.data));
-}, []);
-
-return (
-  <div className="container">
-    <h1>Form App</h1>
-    {formError && <h2 className="error">{formError}</h2>}
-    <FriendForm
-      // 🔥 STEP 2 - The form component needs its props.
-      //  Check implementation of FriendForm
-      //  to see what props it expects.
-      values={formValues}
-      update={updateForm}
-      submit={submitForm}
-      placeholder="Type a username ya chump..."
-    />
-
-    {friends.map((friend) => {
-      return <Friend key={friend.id} details={friend} />;
-    })}
-  </div>
-);
